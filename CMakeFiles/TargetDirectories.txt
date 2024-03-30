@@ -1,3 +1,0 @@
-/home/kali/Desktop/report-arp-spoof/CMakeFiles/report-arp-spoof.dir
-/home/kali/Desktop/report-arp-spoof/CMakeFiles/edit_cache.dir
-/home/kali/Desktop/report-arp-spoof/CMakeFiles/rebuild_cache.dir

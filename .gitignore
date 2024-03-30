@@ -32,3 +32,9 @@
 *.app
 
 .vscode/
+
+# cmake
+*.cmake
+CMakeCache.txt
+send-arp
+CMakeFiles/
