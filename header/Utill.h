@@ -26,13 +26,13 @@ void print_info(struct libnet_ipv4_hdr *header,
                 u_int8_t *m,
                 u_int8_t *m2);
 
-Mac getSenderMac(pcap_t *handle,
+Mac getSenderMac(
                  Mac myMAc,
                  Ip myIP,
                  Ip senderIp,
                  char* interfcae_name);
 
-Mac getTargetMac(pcap_t *handle,
+Mac getTargetMac(
                  Mac myMac,
                  Ip myIp,
                  Ip targetIp,
@@ -61,6 +61,6 @@ EthArpPacket Make_packet(char *interfaceName,
                          Mac arp_tmac,
                          Ip arp_tip);
 
-bool checkRecoverPacket(EthArpPacket &packet, Ip SenderIP, Ip TargetIp);
+bool checkRecoverPacket(EthArpPacket &packet, Ip SenderIP, Ip TargetIp, Mac TargetMac, Mac SenderMac);
 Mac getMacAddress(char *interfaceName);
 Ip getAttackerIp(char *interfaceName);
