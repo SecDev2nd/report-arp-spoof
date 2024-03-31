@@ -9,11 +9,8 @@
 #include <cstdlib>
 #include <string>
 
-#include "mac.h"
-#include "ip.h"
 #include "ethhdr.h"
 #include "arphdr.h"
-#include "AttackerInfo.h"
 
 #pragma pack(push, 1)
 struct EthArpPacket final
@@ -32,14 +29,21 @@ void print_info(struct libnet_ipv4_hdr *header,
 Mac getSenderMac(pcap_t *handle,
                  Mac myMAc,
                  Ip myIP,
-                 Ip senderIp);
+                 Ip senderIp,
+                 char* interfcae_name);
 
 Mac getTargetMac(pcap_t *handle,
                  Mac myMac,
                  Ip myIp,
-                 Ip targetIp);
+                 Ip targetIp,
+                 char* interfcae_name);
 
-EthArpPacket Sender_Infection(const char *interfaceName,
+// Mac getTargetMac(pcap_t *handle,
+//                  Mac myMac,
+//                  Ip myIP,
+//                  Ip TargetIp);
+
+EthArpPacket Sender_Infection(char *interfaceName,
                               Mac my_mac,
                               Mac SenderMac,
                               Ip sip,
@@ -47,10 +51,7 @@ EthArpPacket Sender_Infection(const char *interfaceName,
 
 EthArpPacket Target_Infection(char *interfaceName, Mac my_mac, Mac SenderMac, Ip sip, Ip tip);
 
-Mac getTargetMac(pcap_t *handle,
-                 Mac myMac,
-                 Ip myIP,
-                 Ip TargetIp);
+
 
 EthArpPacket Make_packet(char *interfaceName,
                          Mac eth_dmac,
@@ -59,3 +60,7 @@ EthArpPacket Make_packet(char *interfaceName,
                          Ip arp_sip,
                          Mac arp_tmac,
                          Ip arp_tip);
+
+bool checkRecoverPacket(EthArpPacket &packet, Ip SenderIP, Ip TargetIp);
+Mac getMacAddress(char *interfaceName);
+Ip getAttackerIp(char *interfaceName);

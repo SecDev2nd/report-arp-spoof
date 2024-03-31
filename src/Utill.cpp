@@ -1,10 +1,13 @@
 #include "Utill.h"
 
-void show_usage()
-{
-    std::cout << "syntax: send-arp-test <interface>\n";
-    std::cout << "sample: send-arp-test wlan0\n";
+#define MAC_ALEN 6
+#define MAC_ADDR_LEN 6
+
+void usage() {
+        printf("syntax: send-arp-test <interface>\n");
+        printf("sample: send-arp-test wlan0\n");
 }
+
 
 void print_info(struct libnet_ipv4_hdr *header, u_int8_t *m, u_int8_t *m2)
 {
@@ -116,3 +119,68 @@ EthArpPacket Make_packet(char *interfaceName,
 
     return packet;
 }
+
+
+bool checkRecoverPacket(EthArpPacket &packet, Ip SenderIP, Ip TargetIp){
+    // ARP 패킷인지 확인
+    if(packet.eth_.type() != EthHdr::Arp)
+        return false;
+
+    // ARP 오퍼레이션 확인
+    if(packet.arp_.op() != htons(ArpHdr::Request))
+        return false;
+
+    // ARP 대상 IP가 Sender 또는 Gateway인지 확인
+    if(packet.arp_.sip() != htonl(SenderIP) && packet.arp_.sip() != htonl(TargetIp))
+        return false;
+
+    // ARP 대상 MAC 주소가 브로드캐스트 주소인지 확인
+    if(packet.arp_.tmac() != Mac::nullMac())
+        return false;
+
+    // ARP 패킷이 ARP Request 패킷이며, 대상 IP가 Sender 또는 Gateway이고, 대상 MAC 주소가 브로드캐스트인 경우에만 true 반환
+    return true;
+}
+
+
+//Attacker MAC function
+Mac getMacAddress(char *interfaceName) {
+    int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP); // 소켓 생성
+
+    ifreq ifr{}; // ifreq 구조체 생성
+    strncpy(ifr.ifr_name, interfaceName, IFNAMSIZ); // 인터페이스 이름 설정
+    ioctl(fd, SIOCGIFHWADDR, &ifr); // MAC 주소 가져오기
+    close(fd); // 소켓 닫기
+
+    uint8_t mac[MAC_ADDR_LEN]; // MAC 주소를 저장할 배열
+
+    memcpy(mac, ifr.ifr_hwaddr.sa_data, MAC_ADDR_LEN); // MAC 주소 복사
+
+    printf("Attacker Mac : ");
+    for (int i = 0; i < MAC_ADDR_LEN; i++) {
+        printf("%02X", mac[i]);
+        if (i < MAC_ADDR_LEN - 1) {
+            printf(":");
+        }
+    }
+    printf("\n");
+
+    return Mac(mac);
+}
+
+Ip getAttackerIp(char *interfaceName) {
+    int fd = socket(AF_INET, SOCK_DGRAM, 0); // 소켓 생성
+
+    ifreq ifr{}; // ifreq 구조체 생성
+    strncpy(ifr.ifr_name, interfaceName, IFNAMSIZ); // 인터페이스 이름 설정
+    ioctl(fd, SIOCGIFADDR, &ifr); // IP 주소 가져오기
+    close(fd); // 소켓 닫기
+
+    struct sockaddr_in* sockaddr = reinterpret_cast<struct sockaddr_in*>(&ifr.ifr_addr);
+    char ipBuffer[INET_ADDRSTRLEN]; // IP 주소를 저장할 버퍼
+    inet_ntop(AF_INET, &(sockaddr->sin_addr), ipBuffer, INET_ADDRSTRLEN); // IP 주소를 문자열로 변환하여 저장
+    printf("Attacker Ip : %s\n",ipBuffer);
+
+    
+    return Ip(ipBuffer);
+} 

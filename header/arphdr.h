@@ -5,6 +5,7 @@
 #include "mac.h"
 #include "ip.h"
 
+
 #pragma pack(push, 1)
 struct ArpHdr final {
 	uint16_t hrd_;

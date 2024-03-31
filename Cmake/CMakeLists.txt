@@ -10,12 +10,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../header)
 # 모든 소스 파일을 소스 변수에 추가
 set(SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/arphdr.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src/AttackerInfo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ethhdr.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/ip.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/mac.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/../src/Utill.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src/main.cpp
 )
 
 # 실행 파일 생성
