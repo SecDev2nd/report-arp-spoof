@@ -133,14 +133,13 @@ bool checkRecoverPacket(EthArpPacket &packet, Ip SenderIP, Ip TargetIp, Mac Targ
         {
             if (packet.arp_.sip() == SenderIP || packet.arp_.sip() == TargetIp)
             {
-                if (packet.arp_.tmac() == TargetMac || packet.arp_.tmac() == SenderMac )
+                if (packet.arp_.tmac() == TargetMac || packet.arp_.tmac() == SenderMac || packet.arp_.tmac() == Mac::nullMac())
                 {
                     return true;
                 }
             }
         }
     }
-
     return false;
 }
 
